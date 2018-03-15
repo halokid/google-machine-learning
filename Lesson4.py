@@ -11,6 +11,9 @@ import pandas as pd
 from sklearn import metrics
 import tensorflow as tf
 from tensorflow.python.data import Dataset
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 tf.logging.set_verbosity(tf.logging.ERROR)
 pd.options.display.max_rows = 10
@@ -181,6 +184,40 @@ Root Mean Squared Error:              237.417
 '''
 
 
+'''
+我们的误差跨越目标值的近一半范围，可以进一步缩小误差吗？
+
+这是每个模型开发者都会烦恼的问题。我们来制定一些基本策略，以降低模型误差。
+
+首先，我们可以了解一下根据总体摘要统计信息，预测和目标的符合情况。
+'''
+
+'''
+下面这里是 进行 predictions 和  target 的对比， 按照这个代码~~  预测的结果非常非常垃圾...........
+'''
+calibration_data = pd.DataFrame()
+calibration_data["predictions"] = pd.Series(predictions)
+calibration_data["target"] = pd.Series(targets)
+print (calibration_data.describe())
+
+
+
+#------------------------------------------ 下面开始画图展示一下 -----------------------------------------------
+sample = california_housing_dataframe.sample(n = 300)
+
+#获取最小 和 最大 的  total_rooms 的值
+x_0 = sample["total_rooms"].min()
+x_1 = sample["total_rooms"].max()
+
+#检索在训练期间最后的权重 和 偏差
+weight = linear_regressor.get_variable_value("linear/linear_model/total_rooms/weights")[0]
+bias = linear_regressor.get_variable_value("linear/linear_model/bias_weights")
+
+#获得 (根据 min  和 max  的  total_rooms_values 的值来 预测 median_house_values 的值)
+y_0 = weight * x_0 + bias
+y_1 = weight * x_1 + bias
+
+#描绘回归 线形 从 (x_0, y_0) 到  (x_1, y_1)
 
 
 
