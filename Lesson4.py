@@ -213,18 +213,22 @@ x_1 = sample["total_rooms"].max()
 weight = linear_regressor.get_variable_value("linear/linear_model/total_rooms/weights")[0]
 bias = linear_regressor.get_variable_value("linear/linear_model/bias_weights")
 
-#获得 (根据 min  和 max  的  total_rooms_values 的值来 预测 median_house_values 的值)
+#获得 (根据 min  和 max  的  total_rooms_values 的值来 预测 median_house_value 的值)
 y_0 = weight * x_0 + bias
 y_1 = weight * x_1 + bias
 
 #描绘回归 线形 从 (x_0, y_0) 到  (x_1, y_1)
+plt.plot([x_0, x_1], [y_0, y_1], c = 'r')
 
+#标记 图标坐标
+plt.ylabel("median_house_value")
+plt.xlabel("total_rooms")
 
+#描绘分散的点图 以我们的 范例 数据 为依据， 也就是以 sample 为依据
+plt.scatter(sample["total_rooms"], sample["median_house_value"])
 
-
-
-
-
+#展示 图形
+plt.show()
 
 
 
